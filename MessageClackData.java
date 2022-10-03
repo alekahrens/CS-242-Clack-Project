@@ -3,7 +3,7 @@ package data;
 public class MessageClackData extends ClackData {
     private String message;
   
-    public MessageClackData(userName, message, type) {
+    public MessageClackData(String userName, String message, int type) {
         super(userName, type);
         this.message = message;
     }
