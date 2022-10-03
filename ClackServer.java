@@ -1,5 +1,7 @@
 package main;
 
+import main.data.ClackData;
+
 public class ClackServer {
     private int port;
     private boolean closeConnection;
@@ -13,36 +15,39 @@ public class ClackServer {
       
     }
     public ClackServer() {
-        constant int defaultPort = 7000;
-        ClackServer(defaultPort);
+        this(7000);
+        final int defaultPort = 7000;
     }
   
-    public start() {
+    public void start() {
       
     }
   
-    public receiveData() {
+    public void receiveData() {
       
     }
   
-    public sendData() {
+    public void sendData() {
       
     }
     
-    public getPort() {
+    public int getPort() {
         return port;
     }
   
     public int hashCode() {
-      
+        int result = 17;
+        result = 31*result+getPort();
+        return result;
     }
   
-    public boolean equals(ClackServer otherClackServer) {
-      
+    public boolean equals(Object other) {
+        ClackServer otherServer = (ClackServer)other;
+        return this.getPort() == otherServer.getPort();
     }
   
     public String toString() {
-      
+        return "The port is: " + this.getPort() + ".";
     }
 
 }

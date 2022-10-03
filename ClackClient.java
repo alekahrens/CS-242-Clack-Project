@@ -1,5 +1,7 @@
 package main;
 
+import main.data.ClackData;
+
 public class ClackClient{
     private String userName;
     private String hostName;
@@ -8,72 +10,74 @@ public class ClackClient{
     private ClackData dataToSendToServer;
     private ClackData dataToReceiveFromServer;
   
-    public ClackClient(string userName, string hostName, int port) {
+    public ClackClient(String userName, String hostName, int port) {
         this.userName = userName;
         this.hostName = hostName;
         this.port = port;
-        this.closeConnection = 0;
+        this.closeConnection = false;
         this.dataToSendToServer = null;
         this.dataToReceiveFromServer = null;
     }
   
-    public ClackClient(string userName, string hostName) {
-        constant int defaultport = 7000;
-        ClackClient(userName, hostName, defaultport);
+    public ClackClient(String userName, String hostName) {
+        this(userName, hostName, 7000);
+        final int defaultPort = 7000;
     }
   
-    public ClackClient(string userName) {
-        this.hostName = "localhost";
-        ClackClient(userName, hostName);
+    public ClackClient(String userName) {
+        this(userName, "localhost");
     }
   
     public ClackClient() {
-        this.userName = "Anon";
-        ClackClient(userName);
+        this("Anon");
     }
   
-    public start() {
+    public void start() {
       
     }
   
-    public readClientData() {
+    public void readClientData() {
       
     }
   
-    public sendData() {
+    public void sendData() {
       
     }
   
-    public receiveData() {
+    public void receiveData() {
       
     }
   
-    public printData() {
+    public void printData() {
       
     }
   
-    public getUserName() {
+    public String getUserName() {
         return userName; 
     }
   
-    public getHostName() {
+    public String getHostName() {
         return hostName; 
     }
   
-    public getPort() {
+    public int getPort() {
         return port; 
     }
   
     public int hashCode() {
-      
+        int result = 17;
+        result = 31*result+getPort();
+        result = 31*result+(getUserName()!= null ? getUserName().hashCode():0);
+        return result;
     }
   
-    public boolean equals(ClackClient otherClient) {
-      
+    public boolean equals(Object other) {
+        ClackClient otherClient = (ClackClient)other;
+        return this.userName == otherClient.userName && this.hostName == otherClient.hostName && this.port == otherClient.port;
     }
   
     public String toString() {
-
+        return "The username is: " + getUserName() + ".\n The hostname is: " + getHostName() + ".\n The port is: " + getPort() + ".";
     }
   
 }
