@@ -1,17 +1,18 @@
 package data;
 public class ClackData {
-    private String username;
+    private String userName;
     private int type;
     private Date date;
     
     public ClackData(String userName, int type) {
-        this.username = userName;
+        this.userName = userName;
         this.type = type;
         this.date = new Date();
     }
   
     public ClackData(int type) {
-        ClackData("Anon", type);
+        this.userName = "Anon";
+        ClackData(userName, type);
     }
   
     public ClackData() {
@@ -23,7 +24,7 @@ public class ClackData {
     }
   
     public getUserName() {
-        return username;
+        return userName;
     }
   
     public getDate() {
