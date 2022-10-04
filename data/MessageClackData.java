@@ -5,7 +5,10 @@ public class MessageClackData extends ClackData {
     private String message;
 
     /*
-        Constructor with all arguments provided, that being a username, message, and type.
+     *   Constructor with all arguments provided.
+     *   @param userName    the username.
+     *   @param message     the message.
+     *   @param type        the type.
      */
     public MessageClackData(String userName, String message, int type) {
         super(userName, type);
@@ -13,20 +16,22 @@ public class MessageClackData extends ClackData {
     }
 
     /*
-        Constructor with no arguments, will default to a username "Anon" and message "null", with a default type of 0.
+     *  Constructor with no arguments, will default to a username "Anon" and message "null", with a default type of 0.
      */
     public MessageClackData() {
         this("Anon", "null", 0);
     }
     /*
-        Overridden getData() to return instant message.
+     *  Overridden getData() to return instant message.
+     *  @return message     Returns the message
      */
     @Override
     public String getData() {
         return message;
     }
     /*
-        Overridden hashCode() method.
+     *  Overridden hashCode() method.
+     *  @return result  returns the hashcode.
      */
     @Override
     public int hashCode() {
@@ -37,7 +42,9 @@ public class MessageClackData extends ClackData {
       
     }
     /*
-        Overridden equals() method.
+     *  Overridden equals() method.
+     *  @param other    object to be typecasted and compared.
+     *  @return     returns the boolean value for the comparison.
      */
     @Override
     public boolean equals(Object other) {
@@ -45,7 +52,8 @@ public class MessageClackData extends ClackData {
        return this.getUserName() == otherMessage.getUserName() && this.message == otherMessage.message && this.getType() == otherMessage.getType();
     }
     /*
-        Overridden toString() method.
+     *  Overridden toString() method.
+     *  @return     returns the object as a string.
      */
     @Override
     public String toString() {
