@@ -1,6 +1,6 @@
 package main.test;
 
-import main.ClackServer;
+import main.main.ClackServer;
 
 public class TestClackServer {
     public static void main(){
