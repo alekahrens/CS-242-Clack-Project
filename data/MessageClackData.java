@@ -1,10 +1,10 @@
 package main.data;
 
-/* Class for data that will be transferred between the client and the server. */
+/** Class for data that will be transferred between the client and the server. */
 public class MessageClackData extends ClackData {
     private String message;
 
-    /*
+    /**
      *   Constructor with all arguments provided.
      *   @param userName    the username.
      *   @param message     the message.
@@ -21,7 +21,7 @@ public class MessageClackData extends ClackData {
     public MessageClackData() {
         this("Anon", "null", 0);
     }
-    /*
+    /**
      *  Overridden getData() to return instant message.
      *  @return message     Returns the message
      */
@@ -29,7 +29,7 @@ public class MessageClackData extends ClackData {
     public String getData() {
         return message;
     }
-    /*
+    /**
      *  Overridden hashCode() method.
      *  @return result  returns the hashcode.
      */
@@ -41,7 +41,7 @@ public class MessageClackData extends ClackData {
         return result;
       
     }
-    /*
+    /**
      *  Overridden equals() method.
      *  @param other    object to be typecasted and compared.
      *  @return     returns the boolean value for the comparison.
@@ -51,7 +51,7 @@ public class MessageClackData extends ClackData {
        MessageClackData otherMessage = (MessageClackData)other;
        return this.getUserName() == otherMessage.getUserName() && this.message == otherMessage.message && this.getType() == otherMessage.getType();
     }
-    /*
+    /**
      *  Overridden toString() method.
      *  @return     returns the object as a string.
      */
