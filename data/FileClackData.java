@@ -6,7 +6,10 @@ public class FileClackData extends ClackData {
     private String fileContents;
 
     /*
-        Constructor with all arguments: username, filename, and type.
+     *  Constructor with all arguments.
+     *  @param userName     the username.
+     *  @param fileName     the filename.
+     *  @param type         the type.
      */
     public FileClackData(String userName, String fileName, int type) {
         super(userName, type);
@@ -14,7 +17,7 @@ public class FileClackData extends ClackData {
         this.fileContents = null;
     }
     /*
-        Constructor with no arguments provided. Defaults to "Anon" username, type 0, "N/A" for filename, and null filecontents."
+     *  Constructor with no arguments provided. Defaults to "Anon" username, type 0, "N/A" for filename, and null filecontents."
      */
     public FileClackData() {
         super("Anon", 0);
@@ -22,38 +25,42 @@ public class FileClackData extends ClackData {
         this.fileContents = null;
     }
     /*
-        Setter for fileName.
+     *  Setter for fileName.
+     *  @param fileName     the file name.
      */
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
     /*
-        Getter for fileName.
+     *  Getter for fileName.
+     *  @return fileName    returns the file name.
      */
     public String getFileName() {
         return fileName;
     }
     /*
-        Overridden getData() to return the fileContents.
+     *  Overridden getData() to return the fileContents.
+     *  @return fileContents    returns the file contents.
      */
     @Override
     public String getData() {
         return fileContents;
     }
     /*
-        Currently returns nothing.
+     *  Currently returns nothing.
      */
     public void readFileContents() {
 
     }
     /*
-        Currently returns nothing.
+     *  Currently returns nothing.
      */
     public void writeFileContents() {
     
     }
     /*
-        Overridden hashCode() method.
+     *  Overridden hashCode() method.
+     *  @return result      returns the hashcode.
      */
     @Override
     public int hashCode() {
@@ -63,7 +70,9 @@ public class FileClackData extends ClackData {
         return result;
     }
     /*
-        Overridden equals() method.
+     *  Overridden equals() method.
+     *  @param other    object to compare to.
+     *  @return     returns the boolean value for the comparison.
      */
     @Override
     public boolean equals(Object other) {
@@ -71,7 +80,8 @@ public class FileClackData extends ClackData {
         return this.fileName == otherFileClackData.fileName;
     }
     /*
-        Overridden toString() method.
+     *  Overridden toString() method.
+     *  @return     returns the object as a string.
      */
     @Override
     public String toString() {
