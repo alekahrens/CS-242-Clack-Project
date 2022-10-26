@@ -9,6 +9,10 @@ public abstract class ClackData {
     private String userName;
     private int type;
     private Date date;
+    public final CONSTANT_LISTUSERS = 0;
+    public final CONSTANT_LOGOUT = 1;
+    public final CONSTANT_SENDMESSAGE = 2;
+    public final CONSTANT_SENDFILE = 3;
     /*
      *   Constructor with both arguments. Date will be when the object is created.
      *   @param userName    the userName entered by the user.
