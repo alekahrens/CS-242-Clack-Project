@@ -1,8 +1,9 @@
 package main;
 
 import main.data.ClackData;
+import main.data.FileClackData;
 
-/*
+/**
  *  ClackClient represents the client user, and contains:
  *  The userName for the client.
  *  The hostName for the server.
@@ -13,13 +14,15 @@ import main.data.ClackData;
  */
 
 public class ClackClient{
+    private static final int DEFAULT_PORT = 7000;
+    
     private String userName;
     private String hostName;
     private int port;
     private boolean closeConnection;
     private ClackData dataToSendToServer;
     private ClackData dataToReceiveFromServer;
-    /*
+    /**
      *  Constructor with all arguments provided. Opens connection and sets both datas to null.
      *  @param userName     the username.
      *  @param hostName     the host name.
@@ -33,7 +36,7 @@ public class ClackClient{
         this.dataToSendToServer = null;
         this.dataToReceiveFromServer = null;
     }
-    /*
+    /**
      *  Constructor without port provided. Sets default port to a constant 7000.
      *  @param userName     the username.
      *  @param hostName     the host name.
@@ -42,79 +45,79 @@ public class ClackClient{
         this(userName, hostName, 7000);
         final int defaultPort = 7000;
     }
-    /*
+    /**
      *  Constructor with only userName provided. Sets default hostName to "localhost".
      *  @param userName     the username.
      */
     public ClackClient(String userName) {
         this(userName, "localhost");
     }
-    /*
+    /**
      *  Constructor with no arguments. Sets default userName to "Anon".
      */
     public ClackClient() {
         this("Anon");
     }
-    /*
+    /**
      *  Currently no implementation.
      */
     public void start() {
       
     }
-    /*
+    /**
      *  Currently no implementation.
      */
     public void readClientData() {
       
     }
-    /*
+    /**
      *  Currently no implementation.
      */
     public void sendData() {
       
     }
-    /*
+    /**
      *  Currently no implementation.
      */
     public void receiveData() {
       
     }
-    /*
+    /**
      *  Currently no implementation.
      */
     public void printData() {
       
     }
-    /*
+    /**
      *  Getter for userName.
      *  @return userName    returns the username.
      */
     public String getUserName() {
         return userName; 
     }
-    /*
+    /**
      *  Getter for hostName.
      *  @return hostName    returns the host name.
      */
     public String getHostName() {
         return hostName; 
     }
-    /*
+    /**
      *  Getter for port.
      *  @return port    returns the port.
      */
     public int getPort() {
         return port; 
     }
-    /*
+    /**
      *  Overridden hashCode() method.
      *  @return result      returns the hashcode.
      */
     @Override
     public int hashCode() {
         int result = 17;
-        result = 31*result+getPort();
-        result = 31*result+(getUserName()!= null ? getUserName().hashCode():0);
+        result = 31*result+this.getPort();
+        result = 31*result+(this.getUserName()!= null ? this.getUserName().hashCode():0);
         return result;
     }
     /*
@@ -133,7 +136,14 @@ public class ClackClient{
      */
     @Override
     public String toString() {
-        return "The username is: " + getUserName() + ".\n The hostname is: " + getHostName() + ".\n The port is: " + getPort() + ".";
+        return "This instance of ClackClient has the following properties:\n" 
+               + "Username: " + this.userName + "\n"
+               + "Host name: " + this.hostName + "\n"
+               + "Port number: " + this.port + "\n"
+               + "Connection status: " + (this.closeConnection ? "Closed" : "Open") + "\n"
+               + "Data to send to the server: " + this.dataToSendToServer + "\n"
+               + "Data to receive from the server: " + this.dataToReceiveFromServer + "\n";
+                
     }
   
 }
