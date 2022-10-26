@@ -46,23 +46,94 @@ public class FileClackData extends ClackData {
     public String getData() {
         return fileContents;
     }
-    
+    /**
+     *  Overridden getData() to return decrypted fileContents
+     *  @return decryptedContents   returns the decrypted file contents
+     */
     @Override
     public String getData(String key) {
         String decryptedContents = super(decrypt(this.fileContents, key));
         return decryptedContents;
     }
     /**
-     *  Currently returns nothing.
+     *  Reads the file given by fileName and stores the contents in fileContents
      */
-    public void readFileContents() {
-
+    public void readFileContents() throws IOException {
+        /** Should we do file path? */
+        File file = new File(filePath, this.fileName);
+        try {
+            BufferedReader contentReader = new BufferedReader(new FileReader(file) );
+            String line = reader.readLine();
+            while (line != null){
+                this.fileContents+=line;
+                line = reader.readLine();
+            }
+            System.out.println(this.fileContents);
+            contentReader.close;
+        }
+        catch (FileNotFoundException fnfe) {
+            System.err.println("File does not exist.");
+        }
+        catch (IOException ioe) {
+            System.err.println("IOException occurred.");
+        }
     }
     /**
-     *  Currently returns nothing.
+     *  Reads the file given by fileName, encrypts the contents, and stores the encrypted contents in fileContents
      */
-    public void writeFileContents() {
-    
+    public void readFileContents(String key) throws IOException {
+        /** Should we do file path? */
+        File file = new File(filePath, this.fileName);
+        try {
+            BufferedReader encryptReader = new BufferedReader(new FileReader(file) );
+            String line = reader.readLine();
+            while (line != null){
+                this.fileContents+=line;
+                line = reader.readLine();
+            }
+            System.out.println(this.fileContents);
+            this.fileContents = super(encrypt(this.fileContents, key));
+            encryptReader.close;
+        }
+        catch (FileNotFoundException fnfe) {
+            System.err.println("File does not exist.");
+        }
+        catch (IOException ioe) {
+            System.err.println("IOException occurred.");
+        }
+    }
+    /**
+     *  Writes data stored in fileContents to the file given by fileName
+     */
+    public void writeFileContents() throws IOException {
+        try {
+            FileWriter contentWriter = new FileWriter(this.fileName);
+            contentWriter.write(this.getData());
+            contentWriter.close;
+        }
+        catch (FileNotFoundException fnfe) {
+            System.err.println("File does not exist.");
+        }
+        catch (IOException ioe) {
+            System.err.println("IOException occurred.");
+        }
+    }
+     /**
+     *  Decrypts data stored in fileContents, and writes to the file given by fileName
+     */
+    public void writeFileContents(String key) throws IOException {
+        try {
+            FileWriter contentWriter = new FileWriter(this.fileName);
+            
+            contentWriter.write(this.getData(key));
+            contentWriter.close;
+        }
+        catch (FileNotFoundException fnfe) {
+            System.err.println("File does not exist.");
+        }
+        catch (IOException ioe) {
+            System.err.println("IOException occurred.");
+        }
     }
     /**
      *  Overridden hashCode() method.
