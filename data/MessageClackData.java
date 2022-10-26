@@ -36,8 +36,8 @@ public class MessageClackData extends ClackData {
     @Override
     public int hashCode() {
         int result = 17;
-        result = 31*result+getType();
-        result = 31*result+(getUserName()!= null ? getUserName().hashCode():0);
+        result = 31*result+this.getType();
+        result = 31*result+(this.getUserName()!= null ? this.getUserName().hashCode():0);
         return result;
       
     }
@@ -57,7 +57,7 @@ public class MessageClackData extends ClackData {
      */
     @Override
     public String toString() {
-       return "The username is: " + this.getUserName() + ".\n The type is: " + this.getType() + ".\n The message is: " + this.message + ".";
+       return "This instance of MessageClackData has the following properties:\n" + "Username: " + this.userName + "\n" + "Type: " + this.type + "\n" + "Date: " + this.date.toString() + "\n" + "Message: " + this.message + "\n";
     }
   
   
