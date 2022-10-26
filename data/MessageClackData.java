@@ -23,8 +23,7 @@ public class MessageClackData extends ClackData {
     }
     public MessageClackData(String userName, String message, String key, int type) {
        String encryptedMessage = super(encrypt(message, key));
-        /** Shouldn't be an instance variable. Is this right for implementation? */
-        this(userName, encryptedMessage, type);
+       this(userName, encryptedMessage, type);
     }
     
     
