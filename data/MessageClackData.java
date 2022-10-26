@@ -42,7 +42,7 @@ public class MessageClackData extends ClackData {
      */
     @Override
     public String getData(String key) {
-        String decryptedMessage = super(decrypt(message, key));
+        String decryptedMessage = super(decrypt(this.message, key));
         return decryptedMessage;
     }
     /**
