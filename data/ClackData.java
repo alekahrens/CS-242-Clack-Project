@@ -62,5 +62,48 @@ public abstract class ClackData {
      *  Abstract method for retrieving data.
      */
     abstract public Object getData();
+    
+    /**
+     * This method will encrypt a string using a given key. The key will be generated in a cyclical manner
+     * until it matched the given string in length. Then, the string will be encrypted and returned.
+     */
+    
+    protected String encrypt(String inputStringToEncrypt, String key) {
+        int length = inputStringToEncrypt.length();
+        
+        
+        for (int i = 0; ;i++) {
+            if (length == i) {
+                i = 0;
+            }
+            if (key.length() == inputStringToEncrypt.length()) {
+                break;   
+            }
+            key+=(key.charAt(i));
+        }
+        
+        String encryptedString = "";
+        
+        for (int j = 0; j < inputStringToEncrypt.length; j++) {
+            int y = (inputStringToEncrypt.charAt(j) + key.charAt(j)) % 26;
+            
+            y += 'A';
+           
+            encryptedString+=(char)(y);
+        }
+        return encryptedString;
+    }
+    
+    protected String decrypt(String inputStringToDecrypt, String key) {
+        String decryptedText="";
+ 
+         for (int k = 0 ; k < inputStringToDecrypt.length() && k < key.length(); k++) {
+       
+            int z = (inputStringToDecrypt.charAt(k) - key.charAt(k) + 26) % 26;
+            z += 'A';
+            decryptedText+=(char)(z);
+         }
+         return decryptedText;
+    }
   
 }
