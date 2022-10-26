@@ -15,6 +15,7 @@ import main.data.FileClackData;
 
 public class ClackClient{
     private static final int DEFAULT_PORT = 7000;
+    private static final String key = "ADAIN";
     
     private String userName;
     private String hostName;
@@ -22,6 +23,7 @@ public class ClackClient{
     private boolean closeConnection;
     private ClackData dataToSendToServer;
     private ClackData dataToReceiveFromServer;
+    private java.util.Scanner inFromStd;
     /**
      *  Constructor with all arguments provided. Opens connection and sets both datas to null.
      *  @param userName     the username.
@@ -59,16 +61,48 @@ public class ClackClient{
         this("Anon");
     }
     /**
-     *  Currently no implementation.
+     *  Initializing scanner and reading/printing data.
      */
     public void start() {
-      
+        this.inFromStd = new java.util.scanner(System.in);
+        readClientData();
+        this.dataToReceiveFromServer = this.dataToSendFromServer;
+        printData();
     }
     /**
-     *  Currently no implementation.
+     *  Reads input from the user, and will do a variety of different things depending on input
      */
     public void readClientData() {
-      
+        try {
+            while (this.inFromStd.hasNext()) {
+                String input = this.inFromStd.next();
+                
+                if (input == "DONE") {
+                    this.closeConnection = 1;
+                }
+                if (input == "SENDFILE") {
+                    fileNameI = this.inFromStd.next();
+                    this.dataToSendToServer = new FileClackData(/** What goes for username? */, fileNameI, 3);
+                    try {
+                        this.dataToSendToServer.readFileContents();
+                    }
+                    catch {
+                        this.dataToSendToServer = null;
+                        System.err.println("There was an error reading the file.");   
+                    }
+                }
+                if (input == "LISTUSERS") {
+                    /** Do nothing for now */   
+                }
+                else {
+                    this.dataToSendToServer = new MessageClackData(/** Username */, "", 2);
+                }
+            }
+            this.inFromStd.close();
+        }
+        catch {
+            
+        }
     }
     /**
      *  Currently no implementation.
