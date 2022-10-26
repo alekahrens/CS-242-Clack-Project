@@ -24,7 +24,7 @@ public class MessageClackData extends ClackData {
     public MessageClackData(String userName, String message, String key, int type) {
        String encryptedMessage = super(encrypt(message, key));
         /** Shouldn't be an instance variable. Is this right for implementation? */
-        this(userName, message, type);
+        this(userName, encryptedMessage, type);
     }
     
     
@@ -35,6 +35,15 @@ public class MessageClackData extends ClackData {
     @Override
     public String getData() {
         return message;
+    }
+    /**
+     *  Overridden getData() to return a decrypted message.
+     *  @return decryptedMessage    Returns the decrypted message.
+     */
+    @Override
+    public String getData(String key) {
+        String decryptedMessage = super(decrypt(message, key));
+        return decryptedMessage;
     }
     /**
      *  Overridden hashCode() method.
