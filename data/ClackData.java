@@ -63,6 +63,8 @@ public abstract class ClackData {
      */
     abstract public Object getData();
     
+    abstract public String getData(String key);
+    
     /**
      * This method will encrypt a string using a given key. The key will be generated in a cyclical manner
      * until it matched the given string in length. Then, the string will be encrypted and returned.
