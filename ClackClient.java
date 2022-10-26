@@ -42,8 +42,8 @@ public class ClackClient{
      *  @param hostName     the host name.
      */
     public ClackClient(String userName, String hostName) {
-        this(userName, hostName, 7000);
-        final int defaultPort = 7000;
+        this(userName, hostName, DEFAULT_PORT);
+
     }
     /**
      *  Constructor with only userName provided. Sets default hostName to "localhost".
