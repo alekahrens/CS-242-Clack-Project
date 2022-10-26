@@ -46,6 +46,12 @@ public class FileClackData extends ClackData {
     public String getData() {
         return fileContents;
     }
+    
+    @Override
+    public String getData(String key) {
+        String decryptedContents = super(decrypt(this.fileContents, key));
+        return decryptedContents;
+    }
     /**
      *  Currently returns nothing.
      */
