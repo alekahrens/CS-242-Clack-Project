@@ -21,6 +21,13 @@ public class MessageClackData extends ClackData {
     public MessageClackData() {
         this("Anon", "null", 0);
     }
+    public MessageClackData(String userName, String message, String key, int type) {
+       String encryptedMessage = super(encrypt(message, key));
+        /** Shouldn't be an instance variable. Is this right for implementation? */
+        this(userName, message, type);
+    }
+    
+    
     /**
      *  Overridden getData() to return instant message.
      *  @return message     Returns the message
