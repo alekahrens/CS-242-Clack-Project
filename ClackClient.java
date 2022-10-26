@@ -30,7 +30,16 @@ public class ClackClient{
      *  @param hostName     the host name.
      *  @param port         the port number.
      */
-    public ClackClient(String userName, String hostName, int port) {
+    public ClackClient(String userName, String hostName, int port) throws IllegalArgumentException {
+        if (userName = null) {
+            throw new IllegalArgumentException("User name cannot be null.");   
+        }
+        if (hostName = null) {
+            throw new IllegalArgumentException("Host name cannot be null.");   
+        }
+        if (port < 1024) {
+            throw new IllegalArgumentException("Port number must be 1024 or greater.");   
+        }
         this.userName = userName;
         this.hostName = hostName;
         this.port = port;
@@ -43,7 +52,12 @@ public class ClackClient{
      *  @param userName     the username.
      *  @param hostName     the host name.
      */
-    public ClackClient(String userName, String hostName) {
+    public ClackClient(String userName, String hostName) throws IllegalArgumentException {
+        if (userName = null) {
+            throw new IllegalArgumentException("User name cannot be null.");   
+        }
+        if (hostName = null) {
+            throw new IllegalArgumentException("Host name cannot be null.");   
         this(userName, hostName, DEFAULT_PORT);
 
     }
@@ -51,13 +65,16 @@ public class ClackClient{
      *  Constructor with only userName provided. Sets default hostName to "localhost".
      *  @param userName     the username.
      */
-    public ClackClient(String userName) {
+    public ClackClient(String userName) throws IllegalArgumentException  {
+        if (userName = null) {
+            throw new IllegalArgumentException("User name cannot be null.");   
+        }
         this(userName, "localhost");
     }
     /**
      *  Constructor with no arguments. Sets default userName to "Anon".
      */
-    public ClackClient() {
+    public ClackClient()  {
         this("Anon");
     }
     /**
