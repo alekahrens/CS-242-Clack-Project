@@ -59,8 +59,7 @@ public class FileClackData extends ClackData {
      *  Reads the file given by fileName and stores the contents in fileContents
      */
     public void readFileContents() throws IOException {
-        /** Should we do file path? */
-        File file = new File(filePath, this.fileName);
+        File file = new File(this.fileName);
         try {
             BufferedReader contentReader = new BufferedReader(new FileReader(file) );
             String line = reader.readLine();
@@ -82,8 +81,7 @@ public class FileClackData extends ClackData {
      *  Reads the file given by fileName, encrypts the contents, and stores the encrypted contents in fileContents
      */
     public void readFileContents(String key) throws IOException {
-        /** Should we do file path? */
-        File file = new File(filePath, this.fileName);
+        File file = new File(this.fileName);
         try {
             BufferedReader encryptReader = new BufferedReader(new FileReader(file) );
             String line = reader.readLine();
