@@ -82,9 +82,9 @@ public class ClackClient{
      */
     public void start() {
         this.inFromStd = new java.util.scanner(System.in);
-        readClientData();
+        this.readClientData();
         this.dataToReceiveFromServer = this.dataToSendFromServer;
-        printData();
+        this.printData();
     }
     /**
      *  Reads input from the user, and will do a variety of different things depending on input
@@ -99,7 +99,7 @@ public class ClackClient{
                 }
                 if (input == "SENDFILE") {
                     fileNameI = this.inFromStd.next();
-                    this.dataToSendToServer = new FileClackData(/** What goes for username? */, fileNameI, 3);
+                    this.dataToSendToServer = new FileClackData(this.userName, fileNameI, 3);
                     try {
                         this.dataToSendToServer.readFileContents();
                     }
@@ -112,7 +112,7 @@ public class ClackClient{
                     /** Do nothing for now */   
                 }
                 else {
-                    this.dataToSendToServer = new MessageClackData(/** Username */, "", 2);
+                    this.dataToSendToServer = new MessageClackData(this.userName, "", 2);
                 }
             }
             this.inFromStd.close();
@@ -134,10 +134,10 @@ public class ClackClient{
       
     }
     /**
-     *  Currently no implementation.
+     *  Prints out the data from the dataToReceiveFromServer ClackData object
      */
     public void printData() {
-      
+        System.out.println(this.dataToReceiveFromServer.getData());
     }
     /**
      *  Getter for userName.
