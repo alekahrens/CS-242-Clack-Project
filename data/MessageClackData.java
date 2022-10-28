@@ -1,4 +1,4 @@
-package main.data;
+package data;
 
 /** Class for data that will be transferred between the client and the server. */
 public class MessageClackData extends ClackData {

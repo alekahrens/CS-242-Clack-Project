@@ -1,14 +1,13 @@
-package main.test;
+package test;
 
-import main.main.ClackClient;
+import main.ClackClient;
 
 public class TestClackClient {
-
-    public static void main(){
-        ClackClient cClient = new ClackClient("ahrensaj", "clarkson", 22);
-        ClackClient cClient2 = new ClackClient("peetsca", "potsdam", 22);
+    public static void main(String[] args) {
+        ClackClient cClient = new ClackClient("ahrensaj", "clarkson", 1024);
+        ClackClient cClient2 = new ClackClient("peetsca", "potsdam", 1025);
         ClackClient cClient3 = new ClackClient("millerm");
-        ClackClient cClient4 = new ClackClient("ahrensaj", "clarkson", 22);
+        ClackClient cClient4 = new ClackClient("ahrensaj", "clarkson", -1204);
         //Test Cases for ClackClient
         System.out.println(cClient.getUserName());
         System.out.println(cClient.getHostName());
