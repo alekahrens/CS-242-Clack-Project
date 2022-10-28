@@ -1,7 +1,6 @@
 
-package main.main;
-
-import main.data.ClackData;
+package main;
+import data.ClackData;
 
 /**
  *  ClackServer represents the server. It contains:

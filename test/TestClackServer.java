@@ -1,9 +1,9 @@
-package main.test;
+package test;
 
-import main.main.ClackServer;
+import main.ClackServer;
 
 public class TestClackServer {
-    public static void main(){
+    public static void main(String[] args){
         ClackServer cServer = new ClackServer(22);
         ClackServer cServer2 = new ClackServer(22);
         ClackServer cServer3 = new ClackServer();

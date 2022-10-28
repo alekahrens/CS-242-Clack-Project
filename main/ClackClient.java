@@ -1,9 +1,9 @@
 
-package main.main;
+package main;
 
-import main.data.ClackData;
-import main.data.FileClackData;
-import main.data.MessageClackData;
+import data.ClackData;
+import data.FileClackData;
+import data.MessageClackData;
 
 import java.util.Scanner;
 

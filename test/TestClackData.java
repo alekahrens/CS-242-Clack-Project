@@ -1,11 +1,10 @@
-package main.test;
+package test;
 
-import main.data.FileClackData;
-import main.data.MessageClackData;
+import data.FileClackData;
+import data.MessageClackData;
 
 public class TestClackData {
-
-    public static void main(){
+    public static void main(String[] args){
         MessageClackData mcTest = new MessageClackData("ahrensaj", "Hello World", 1);
         MessageClackData mcTest2 = new MessageClackData("ahrensaj", "Hello World", 1);
         MessageClackData mcTest3 = new MessageClackData();
