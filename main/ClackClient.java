@@ -20,7 +20,7 @@ import java.util.Scanner;
 public class ClackClient{
     private static final int DEFAULT_PORT = 7000;
     private static final String key = "ADAIN";
-    
+
     private String userName;
     private String hostName;
     private int port;
@@ -36,13 +36,13 @@ public class ClackClient{
      */
     public ClackClient(String userName, String hostName, int port) throws IllegalArgumentException {
         if (userName == null) {
-            throw new IllegalArgumentException("User name cannot be null.");   
+            throw new IllegalArgumentException("User name cannot be null.");
         }
         if (hostName == null) {
-            throw new IllegalArgumentException("Host name cannot be null.");   
+            throw new IllegalArgumentException("Host name cannot be null.");
         }
         if (port < 1024) {
-            throw new IllegalArgumentException("Port number must be 1024 or greater.");   
+            throw new IllegalArgumentException("Port number must be 1024 or greater.");
         }
         this.userName = userName;
         this.hostName = hostName;
@@ -71,7 +71,7 @@ public class ClackClient{
      */
     public ClackClient(String userName) throws IllegalArgumentException  {
         if (userName == null) {
-            throw new IllegalArgumentException("User name cannot be null.");   
+            throw new IllegalArgumentException("User name cannot be null.");
         }
         new ClackClient(userName, "localhost");
 
@@ -113,7 +113,7 @@ public class ClackClient{
                     }
                     catch (Exception e) {
                         this.dataToSendToServer = null;
-                        System.err.println("There was an error reading the file.");   
+                        System.err.println("There was an error reading the file.");
                     }
 
                 }
@@ -136,13 +136,13 @@ public class ClackClient{
      *  Currently no implementation.
      */
     public void sendData() {
-      
+
     }
     /**
      *  Currently no implementation.
      */
     public void receiveData() {
-      
+
     }
     /**
      *  Prints out the data from the dataToReceiveFromServer ClackData object
@@ -155,21 +155,21 @@ public class ClackClient{
      *  @return userName    returns the username.
      */
     public String getUserName() {
-        return userName; 
+        return userName;
     }
     /**
      *  Getter for hostName.
      *  @return hostName    returns the host name.
      */
     public String getHostName() {
-        return hostName; 
+        return hostName;
     }
     /**
      *  Getter for port.
      *  @return port    returns the port.
      */
     public int getPort() {
-        return port; 
+        return port;
     }
     /**
      *  Overridden hashCode() method.
@@ -198,15 +198,14 @@ public class ClackClient{
      */
     @Override
     public String toString() {
-        return "This instance of ClackClient has the following properties:\n" 
-               + "Username: " + this.userName + "\n"
-               + "Host name: " + this.hostName + "\n"
-               + "Port number: " + this.port + "\n"
-               + "Connection status: " + (this.closeConnection ? "Closed" : "Open") + "\n"
-               + "Data to send to the server: " + this.dataToSendToServer + "\n"
-               + "Data to receive from the server: " + this.dataToReceiveFromServer + "\n";
-                
-    }
-  
-}
+        return "This instance of ClackClient has the following properties:\n"
+                + "Username: " + this.userName + "\n"
+                + "Host name: " + this.hostName + "\n"
+                + "Port number: " + this.port + "\n"
+                + "Connection status: " + (this.closeConnection ? "Closed" : "Open") + "\n"
+                + "Data to send to the server: " + this.dataToSendToServer + "\n"
+                + "Data to receive from the server: " + this.dataToReceiveFromServer + "\n";
 
+    }
+
+}
