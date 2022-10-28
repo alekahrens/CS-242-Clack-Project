@@ -5,10 +5,11 @@ import main.ClackClient;
 public class TestClackClient {
     public static void main(String[] args) {
         ClackClient cClient = new ClackClient("ahrensaj", "clarkson", 1024);
+        cClient.start();
         ClackClient cClient2 = new ClackClient("peetsca", "potsdam", 1025);
         ClackClient cClient3 = new ClackClient("millerm");
-        ClackClient cClient4 = new ClackClient("ahrensaj", "clarkson", -1204);
-        //Test Cases for ClackClient
+        ClackClient cClient4 = new ClackClient("ahrensaj", "clarkson", 1204);
+        /** Test Cases for ClackClient */
         System.out.println(cClient.getUserName());
         System.out.println(cClient.getHostName());
         System.out.println(cClient.getPort());
@@ -20,6 +21,6 @@ public class TestClackClient {
         System.out.println(cClient3.getPort());
         System.out.println(cClient3.equals(cClient2));
         System.out.println(cClient3.toString());
-
+        System.exit(0);
     }
 }

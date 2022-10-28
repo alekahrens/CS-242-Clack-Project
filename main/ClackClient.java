@@ -96,31 +96,37 @@ public class ClackClient{
      */
     public void readClientData() {
         try {
+            System.out.println("Enter something");
+
             while (this.inFromStd.hasNext()) {
                 String input = this.inFromStd.next();
-                
-                if (input == "DONE") {
+                if (input.equals("DONE")) {
                     this.closeConnection = true;
+                    break;
                 }
-                if (input == "SENDFILE") {
+                if (input.equals("SENDFILE")) {
                     String fileNameI = this.inFromStd.next();
                     this.dataToSendToServer = new FileClackData(this.userName, fileNameI, 3);
                     try {
-                        ((FileClackData) dataToSendToServer).readFileContents();
+                        ((FileClackData)dataToSendToServer).readFileContents();
+                        System.out.println(this.dataToSendToServer);
                     }
                     catch (Exception e) {
                         this.dataToSendToServer = null;
                         System.err.println("There was an error reading the file.");   
                     }
+
                 }
-                if (input == "LISTUSERS") {
-                    /** Do nothing for now */   
+                if (input.equals("LISTUSERS")) {
+                    /** Do nothing for now */
+
                 }
+
                 else {
                     this.dataToSendToServer = new MessageClackData(this.userName, "", 2);
                 }
             }
-            this.inFromStd.close();
+
         }
         catch (Exception e) {
             System.err.println("There was an error.");
