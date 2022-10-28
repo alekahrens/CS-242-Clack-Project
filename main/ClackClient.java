@@ -1,3 +1,4 @@
+
 package main;
 
 import main.data.ClackData;
@@ -198,3 +199,4 @@ public class ClackClient{
     }
   
 }
+
