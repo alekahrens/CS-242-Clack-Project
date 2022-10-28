@@ -1,4 +1,5 @@
-package main.main;
+
+package main;
 
 import main.data.ClackData;
 
@@ -11,6 +12,8 @@ import main.data.ClackData;
  */
 
 public class ClackServer {
+    private static final int DEFAULT_PORT = 7000;
+    
     private int port;
     private boolean closeConnection;
     private ClackData dataToReceiveFromClient;
@@ -24,26 +27,26 @@ public class ClackServer {
         this.dataToReceiveFromClient = null;
         this.dataToSendToClient = null;
     }
-    /*
+    /**
      *  Constructor with no arguments. Sets default port to 7000.
      */
     public ClackServer() {
-        this(7000);
-        final int defaultPort = 7000;
+        this(DEFAULT_PORT);
+       
     }
-    /*
+    /**
      *  Currently no implementation.
      */
     public void start() {
       
     }
-    /*
+    /**
      *  Currently no implementation.
      */
     public void receiveData() {
       
     }
-    /*
+    /**
      *  Currently no implementation.
      */
     public void sendData() {
@@ -63,7 +66,7 @@ public class ClackServer {
     @Override
     public int hashCode() {
         int result = 17;
-        result = 31*result+getPort();
+        result = 31*result+this.getPort();
         return result;
     }
     /**
@@ -82,7 +85,11 @@ public class ClackServer {
      */
     @Override
     public String toString() {
-        return "The port is: " + this.getPort() + ".";
+        return "This instance of ClackServer has the following properties:\n"
+                + "Port number: " + this.port + "\n"
+                + "Connection status: " + (this.closeConnection ? "Closed" : "Open") + "\n"
+                + "Data to receive from the client: " + this.dataToReceiveFromClient + "\n"
+                + "Data to send to the client: " + this.dataToSendToClient + "\n";
     }
 
 }

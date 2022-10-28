@@ -16,7 +16,7 @@ public class FileClackData extends ClackData {
         this.fileName = fileName;
         this.fileContents = null;
     }
-    /*
+    /**
      *  Constructor with no arguments provided. Defaults to "Anon" username, type 0, "N/A" for filename, and null filecontents."
      */
     public FileClackData() {
@@ -46,17 +46,92 @@ public class FileClackData extends ClackData {
     public String getData() {
         return fileContents;
     }
-    /*
-     *  Currently returns nothing.
+    /**
+     *  Overridden getData() to return decrypted fileContents
+     *  @return decryptedContents   returns the decrypted file contents
      */
-    public void readFileContents() {
-
+    @Override
+    public String getData(String key) {
+        String decryptedContents = super(decrypt(this.fileContents, key));
+        return decryptedContents;
     }
-    /*
-     *  Currently returns nothing.
+    /**
+     *  Reads the file given by fileName and stores the contents in fileContents
      */
-    public void writeFileContents() {
-    
+    public void readFileContents() throws IOException {
+        File file = new File(this.fileName);
+        try {
+            BufferedReader contentReader = new BufferedReader(new FileReader(file) );
+            String line = reader.readLine();
+            while (line != null){
+                this.fileContents+=line;
+                line = reader.readLine();
+            }
+            System.out.println(this.fileContents);
+            contentReader.close;
+        }
+        catch (FileNotFoundException fnfe) {
+            System.err.println("File does not exist.");
+        }
+        catch (IOException ioe) {
+            System.err.println("IOException occurred.");
+        }
+    }
+    /**
+     *  Reads the file given by fileName, encrypts the contents, and stores the encrypted contents in fileContents
+     */
+    public void readFileContents(String key) throws IOException {
+        File file = new File(this.fileName);
+        try {
+            BufferedReader encryptReader = new BufferedReader(new FileReader(file) );
+            String line = reader.readLine();
+            while (line != null){
+                this.fileContents+=line;
+                line = reader.readLine();
+            }
+            System.out.println(this.fileContents);
+            this.fileContents = super(encrypt(this.fileContents, key));
+            encryptReader.close;
+        }
+        catch (FileNotFoundException fnfe) {
+            System.err.println("File does not exist.");
+        }
+        catch (IOException ioe) {
+            System.err.println("IOException occurred.");
+        }
+    }
+    /**
+     *  Writes data stored in fileContents to the file given by fileName
+     */
+    public void writeFileContents() throws IOException {
+        try {
+            FileWriter contentWriter = new FileWriter(this.fileName);
+            contentWriter.write(this.getData());
+            contentWriter.close;
+        }
+        catch (FileNotFoundException fnfe) {
+            System.err.println("File does not exist.");
+        }
+        catch (IOException ioe) {
+            System.err.println("IOException occurred.");
+        }
+    }
+     /**
+     *  Decrypts data stored in fileContents, and writes to the file given by fileName
+     */
+    public void writeFileContents(String key) throws IOException {
+        try {
+            FileWriter contentWriter = new FileWriter(this.fileName);
+            
+            contentWriter.write(this.getData(key));
+            contentWriter.close;
+        }
+        catch (FileNotFoundException fnfe) {
+            System.err.println("File does not exist.");
+        }
+        catch (IOException ioe) {
+            System.err.println("IOException occurred.");
+        }
     }
     /**
      *  Overridden hashCode() method.
@@ -65,8 +140,8 @@ public class FileClackData extends ClackData {
     @Override
     public int hashCode() {
         int result = 17;
-        result = 31*result+getType();
-        result = 31*result+(getUserName()!= null ? getUserName().hashCode():0);
+        result = 31*result+this.getType();
+        result = 31*result+(this.getUserName()!= null ? this.getUserName().hashCode():0);
         return result;
     }
     /**
@@ -85,6 +160,11 @@ public class FileClackData extends ClackData {
      */
     @Override
     public String toString() {
-        return "The username is: " + this.getUserName() + ".\n The type is: " + this.getType() + ".\n The filename is: " + this.fileName + ".";
+        return "This instance of FileClackData has the following properties:\n"
+                + "Username: " + this.userName + "\n"
+                + "Type: " + this.type + "\n"
+                + "Date: " + this.date.toString() + "\n"
+                + "File Name: " + this.fileName + "\n"
+                + "File Contents: " + this.fileContents + "\n";
     } 
 }
