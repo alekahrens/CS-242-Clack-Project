@@ -1,5 +1,7 @@
 package main.data;
 
+import java.io.*;
+
 /** Class for file data to be transferred between client and server. */
 public class FileClackData extends ClackData {
     private String fileName;
@@ -52,7 +54,7 @@ public class FileClackData extends ClackData {
      */
     @Override
     public String getData(String key) {
-        String decryptedContents = super(decrypt(this.fileContents, key));
+        String decryptedContents = decrypt(this.fileContents, key);
         return decryptedContents;
     }
     /**
@@ -62,13 +64,13 @@ public class FileClackData extends ClackData {
         File file = new File(this.fileName);
         try {
             BufferedReader contentReader = new BufferedReader(new FileReader(file) );
-            String line = reader.readLine();
+            String line = contentReader.readLine();
             while (line != null){
                 this.fileContents+=line;
-                line = reader.readLine();
+                line = contentReader.readLine();
             }
             System.out.println(this.fileContents);
-            contentReader.close;
+            contentReader.close();
         }
         catch (FileNotFoundException fnfe) {
             System.err.println("File does not exist.");
@@ -84,14 +86,14 @@ public class FileClackData extends ClackData {
         File file = new File(this.fileName);
         try {
             BufferedReader encryptReader = new BufferedReader(new FileReader(file) );
-            String line = reader.readLine();
+            String line = encryptReader.readLine();
             while (line != null){
                 this.fileContents+=line;
-                line = reader.readLine();
+                line = encryptReader.readLine();
             }
             System.out.println(this.fileContents);
-            this.fileContents = super(encrypt(this.fileContents, key));
-            encryptReader.close;
+            this.fileContents = encrypt(this.fileContents, key);
+            encryptReader.close();
         }
         catch (FileNotFoundException fnfe) {
             System.err.println("File does not exist.");
@@ -107,7 +109,7 @@ public class FileClackData extends ClackData {
         try {
             FileWriter contentWriter = new FileWriter(this.fileName);
             contentWriter.write(this.getData());
-            contentWriter.close;
+            contentWriter.close();
         }
         catch (FileNotFoundException fnfe) {
             System.err.println("File does not exist.");
@@ -124,7 +126,7 @@ public class FileClackData extends ClackData {
             FileWriter contentWriter = new FileWriter(this.fileName);
             
             contentWriter.write(this.getData(key));
-            contentWriter.close;
+            contentWriter.close();
         }
         catch (FileNotFoundException fnfe) {
             System.err.println("File does not exist.");
@@ -161,9 +163,9 @@ public class FileClackData extends ClackData {
     @Override
     public String toString() {
         return "This instance of FileClackData has the following properties:\n"
-                + "Username: " + this.userName + "\n"
-                + "Type: " + this.type + "\n"
-                + "Date: " + this.date.toString() + "\n"
+                + "Username: " + this.getUserName() + "\n"
+                + "Type: " + this.getType() + "\n"
+                + "Date: " + this.getDate().toString() + "\n"
                 + "File Name: " + this.fileName + "\n"
                 + "File Contents: " + this.fileContents + "\n";
     } 

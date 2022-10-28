@@ -17,7 +17,6 @@ public abstract class ClackData {
      *   Constructor with both arguments. Date will be when the object is created.
      *   @param userName    the userName entered by the user.
      *   @param type    the type of data.
-     *   @param Date    the date upon data creation.
      */
     public ClackData(String userName, int type) {
         this.userName = userName;
@@ -72,8 +71,7 @@ public abstract class ClackData {
     
     protected String encrypt(String inputStringToEncrypt, String key) {
         int length = inputStringToEncrypt.length();
-        
-        
+
         for (int i = 0; ;i++) {
             if (length == i) {
                 i = 0;
@@ -86,7 +84,7 @@ public abstract class ClackData {
         
         String encryptedString = "";
         
-        for (int j = 0; j < inputStringToEncrypt.length; j++) {
+        for (int j = 0; j < inputStringToEncrypt.length(); j++) {
             int y = (inputStringToEncrypt.charAt(j) + key.charAt(j)) % 26;
             
             y += 'A';

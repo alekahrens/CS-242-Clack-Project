@@ -1,5 +1,5 @@
 
-package main;
+package main.main;
 
 import main.data.ClackData;
 

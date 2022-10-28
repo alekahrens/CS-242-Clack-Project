@@ -1,8 +1,11 @@
 
-package main;
+package main.main;
 
 import main.data.ClackData;
 import main.data.FileClackData;
+import main.data.MessageClackData;
+
+import java.util.Scanner;
 
 /**
  *  ClackClient represents the client user, and contains:
@@ -32,10 +35,10 @@ public class ClackClient{
      *  @param port         the port number.
      */
     public ClackClient(String userName, String hostName, int port) throws IllegalArgumentException {
-        if (userName = null) {
+        if (userName == null) {
             throw new IllegalArgumentException("User name cannot be null.");   
         }
-        if (hostName = null) {
+        if (hostName == null) {
             throw new IllegalArgumentException("Host name cannot be null.");   
         }
         if (port < 1024) {
@@ -54,23 +57,24 @@ public class ClackClient{
      *  @param hostName     the host name.
      */
     public ClackClient(String userName, String hostName) throws IllegalArgumentException {
-        if (userName = null) {
-            throw new IllegalArgumentException("User name cannot be null.");   
+        if (userName == null) {
+            throw new IllegalArgumentException("User name cannot be null.");
         }
-        if (hostName = null) {
-            throw new IllegalArgumentException("Host name cannot be null.");   
-        this(userName, hostName, DEFAULT_PORT);
-
+        if (hostName == null) {
+            throw new IllegalArgumentException("Host name cannot be null.");
+        }
+        new ClackClient(userName,hostName,DEFAULT_PORT);
     }
     /**
      *  Constructor with only userName provided. Sets default hostName to "localhost".
      *  @param userName     the username.
      */
     public ClackClient(String userName) throws IllegalArgumentException  {
-        if (userName = null) {
+        if (userName == null) {
             throw new IllegalArgumentException("User name cannot be null.");   
         }
-        this(userName, "localhost");
+        new ClackClient(userName, "localhost");
+
     }
     /**
      *  Constructor with no arguments. Sets default userName to "Anon".
@@ -82,9 +86,9 @@ public class ClackClient{
      *  Initializing scanner and reading/printing data.
      */
     public void start() {
-        this.inFromStd = new java.util.scanner(System.in);
+        this.inFromStd = new Scanner(System.in);
         this.readClientData();
-        this.dataToReceiveFromServer = this.dataToSendFromServer;
+        this.dataToReceiveFromServer = this.dataToSendToServer;
         this.printData();
     }
     /**
@@ -96,15 +100,15 @@ public class ClackClient{
                 String input = this.inFromStd.next();
                 
                 if (input == "DONE") {
-                    this.closeConnection = 1;
+                    this.closeConnection = true;
                 }
                 if (input == "SENDFILE") {
-                    fileNameI = this.inFromStd.next();
+                    String fileNameI = this.inFromStd.next();
                     this.dataToSendToServer = new FileClackData(this.userName, fileNameI, 3);
                     try {
-                        this.dataToSendToServer.readFileContents();
+                        ((FileClackData) dataToSendToServer).readFileContents();
                     }
-                    catch {
+                    catch (Exception e) {
                         this.dataToSendToServer = null;
                         System.err.println("There was an error reading the file.");   
                     }
@@ -118,8 +122,8 @@ public class ClackClient{
             }
             this.inFromStd.close();
         }
-        catch {
-            
+        catch (Exception e) {
+            System.err.println("There was an error.");
         }
     }
     /**
