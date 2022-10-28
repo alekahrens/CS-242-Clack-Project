@@ -23,8 +23,8 @@ public class MessageClackData extends ClackData {
     }
 
     public MessageClackData(String userName, String message, String key, int type) {
-       String encryptedMessage = super(encrypt(message, key));
-       this(userName, encryptedMessage, type);
+       String encryptedMessage = encrypt(message, key);
+       new MessageClackData(userName, encryptedMessage, type);
     }
     
     
@@ -43,7 +43,7 @@ public class MessageClackData extends ClackData {
      */
     @Override
     public String getData(String key) {
-        String decryptedMessage = super(decrypt(this.message, key));
+        String decryptedMessage = decrypt(this.message, key);
         return decryptedMessage;
     }
     /**
@@ -74,7 +74,7 @@ public class MessageClackData extends ClackData {
      */
     @Override
     public String toString() {
-       return "This instance of MessageClackData has the following properties:\n" + "Username: " + this.userName + "\n" + "Type: " + this.type + "\n" + "Date: " + this.date.toString() + "\n" + "Message: " + this.message + "\n";
+       return "This instance of MessageClackData has the following properties:\n" + "Username: " + this.getUserName() + "\n" + "Type: " + this.getType() + "\n" + "Date: " + this.getDate().toString() + "\n" + "Message: " + this.message + "\n";
     }
   
   
