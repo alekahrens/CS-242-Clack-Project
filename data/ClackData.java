@@ -1,11 +1,12 @@
 package data;
 
+import java.io.Serializable;
 import java.util.Date;
 /**
  *   Superclass for Clack Data.
  */
 
-public abstract class ClackData {
+public abstract class ClackData implements Serializable {
     private String userName;
     private int type;
     private Date date;
