@@ -5,11 +5,11 @@ import data.MessageClackData;
 
 public class TestClackData {
     public static void main(String[] args){
-        MessageClackData mcTest = new MessageClackData("ahrensaj", "Hello World", 1);
-        MessageClackData mcTest2 = new MessageClackData("ahrensaj", "Hello World", 1);
+        MessageClackData mcTest = new MessageClackData("ahrensaj", "Hello_World", 3);
+        MessageClackData mcTest2 = new MessageClackData("ahrensa", "Hello_World", 3);
         MessageClackData mcTest3 = new MessageClackData();
-        FileClackData fcTest = new FileClackData("peetsca", "CS 242", 2);
-        FileClackData fcTest2 = new FileClackData("peetsca", "CS 242", 2);
+        FileClackData fcTest = new FileClackData("peetsca", "CS_242", 2);
+        FileClackData fcTest2 = new FileClackData("peetsca", "CS_242", 2);
         FileClackData fcTest3 = new FileClackData();
 
         //Test cases for MessageClackData
