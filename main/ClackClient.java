@@ -5,6 +5,11 @@ import data.ClackData;
 import data.FileClackData;
 import data.MessageClackData;
 
+import java.io.*;
+import java.net.ConnectException;
+import java.net.NoRouteToHostException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 /**
@@ -28,6 +33,10 @@ public class ClackClient{
     private ClackData dataToSendToServer;
     private ClackData dataToReceiveFromServer;
     private java.util.Scanner inFromStd;
+
+    private ObjectInputStream inFromServer;
+
+    private ObjectOutputStream outToServer;
     /**
      *  Constructor with all arguments provided. Opens connection and sets both datas to null.
      *  @param userName     the username.
@@ -50,6 +59,8 @@ public class ClackClient{
         this.closeConnection = false;
         this.dataToSendToServer = null;
         this.dataToReceiveFromServer = null;
+        this.inFromServer = null;
+        this.outToServer = null;
     }
     /**
      *  Constructor without port provided. Sets default port to a constant 7000.
@@ -86,62 +97,102 @@ public class ClackClient{
      *  Initializing scanner and reading/printing data.
      */
     public void start() {
-        this.inFromStd = new Scanner(System.in);
-        this.readClientData();
-        this.dataToReceiveFromServer = this.dataToSendToServer;
-        this.printData();
+        try {
+            Socket skt = new Socket(getHostName(), getPort());
+            outToServer = (ObjectOutputStream) skt.getOutputStream();
+            inFromServer = (ObjectInputStream) skt.getInputStream();
+            this.inFromStd = new Scanner(System.in);
+            while (!this.closeConnection) {
+                this.readClientData();
+                this.sendData();
+                this.receiveData();
+                this.printData();
+            }
+            skt.close();
+            inFromStd.close();
+        }
+        catch(UnknownHostException uhe) {
+            System.err.println("Unknown host.");
+        }
+        catch (NoRouteToHostException nrhe) {
+            System.err.println("Server unreachable.");
+        }
+        catch (ConnectException ce) {
+            System.err.println("Connection refused.");
+        }
+        catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
+
     }
     /**
      *  Reads input from the user, and will do a variety of different things depending on input
      */
     public void readClientData() {
-        try {
-            System.out.println("Enter something");
-
-            while (this.inFromStd.hasNext()) {
                 String input = this.inFromStd.next();
                 if (input.equals("DONE")) {
                     this.closeConnection = true;
-                    break;
+                    this.dataToSendToServer = new MessageClackData(this.userName, input, key, ClackData.CONSTANT_LOGOUT);
                 }
-                if (input.equals("SENDFILE")) {
+                else if (input.equals("SENDFILE")) {
                     String fileNameI = this.inFromStd.next();
-                    this.dataToSendToServer = new FileClackData(this.userName, fileNameI, 3);
+                    this.dataToSendToServer = new FileClackData(this.userName, fileNameI, ClackData.CONSTANT_SENDFILE);
                     try {
-                        ((FileClackData)dataToSendToServer).readFileContents();
-                        System.out.println(this.dataToSendToServer);
+                        ((FileClackData)dataToSendToServer).readFileContents(key);
                     }
-                    catch (Exception e) {
-                        this.dataToSendToServer = null;
+                    catch (IOException ioe) {
                         System.err.println("There was an error reading the file.");
+                        this.dataToSendToServer = null;
+
+                        System.err.println("There was an error reading the file.");
+
                     }
 
                 }
-                if (input.equals("LISTUSERS")) {
+                else if (input.equals("LISTUSERS")) {
                     /** Do nothing for now */
 
                 }
 
                 else {
-                    this.dataToSendToServer = new MessageClackData(this.userName, "", 2);
+                    String message = input + this.inFromStd.nextLine();
+                    this.dataToSendToServer = new MessageClackData(this.userName, message, key, ClackData.CONSTANT_SENDMESSAGE);
                 }
             }
 
-        }
-        catch (Exception e) {
-            System.err.println("There was an error.");
-        }
-    }
     /**
      *  Currently no implementation.
      */
     public void sendData() {
+
+        try {
+            outToServer.writeObject(this.dataToSendToServer);
+            outToServer.flush();
+        }
+        catch (InvalidClassException ice) {
+            System.err.println("Invalid class");
+        }
+        catch (NotSerializableException nse) {
+            System.err.println("Class is not serialized.");
+        }
+        catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
     }
     /**
      *  Currently no implementation.
      */
     public void receiveData() {
+        try {
+            this.dataToReceiveFromServer = (ClackData) inFromServer.readObject();
+        }
+        catch (ClassNotFoundException cnfe) {
+            System.err.println("Class not found.");
+        }
+        catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
 
     }
     /**
@@ -207,5 +258,30 @@ public class ClackClient{
                 + "Data to receive from the server: " + this.dataToReceiveFromServer + "\n";
 
     }
+
+    public static void main(String[] args) {
+        if (args.length > 0) {
+            String str = String.join(",",args);
+           String[] arguments = str.split("[@:]");
+           if (arguments.length == 3) {
+               ClackClient thrClient = new ClackClient(arguments[0], arguments[1], Integer.parseInt(arguments[2]));
+               thrClient.start();
+           }
+           else if (arguments.length == 2) {
+               ClackClient twClient = new ClackClient(arguments[0], arguments[1]);
+               twClient.start();
+           }
+           else if (arguments.length == 1) {
+               ClackClient onClient = new ClackClient(arguments[0]);
+               onClient.start();
+           }
+        }
+        else {
+            ClackClient aClient = new ClackClient();
+            aClient.start();
+        }
+    }
+  
+}
 
 }
