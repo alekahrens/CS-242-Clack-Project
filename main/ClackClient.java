@@ -95,12 +95,13 @@ public class ClackClient{
     }
     /**
      *  Initializing scanner and reading/printing data.
+     *  It will also catch an exception if it is thrown.
      */
     public void start() {
         try {
             Socket skt = new Socket(getHostName(), getPort());
-            outToServer = (ObjectOutputStream) skt.getOutputStream();
-            inFromServer = (ObjectInputStream) skt.getInputStream();
+            outToServer = new ObjectOutputStream(skt.getOutputStream());
+            inFromServer = new ObjectInputStream(skt.getInputStream());
             this.inFromStd = new Scanner(System.in);
             while (!this.closeConnection) {
                 this.readClientData();
@@ -126,13 +127,17 @@ public class ClackClient{
 
     }
     /**
-     *  Reads input from the user, and will do a variety of different things depending on input
+     *  Reads input from the user, and will do a variety of different things depending on input. Depending on what is
+     *  inputted then will tell the program what the next action is. Like closing the server to sending data from the
+     *  client to the server.
      */
     public void readClientData() {
                 String input = this.inFromStd.next();
                 if (input.equals("DONE")) {
-                    this.closeConnection = true;
+                    System.out.println("Closing Connection");
                     this.dataToSendToServer = new MessageClackData(this.userName, input, key, ClackData.CONSTANT_LOGOUT);
+                    this.inFromStd.close();
+                    this.closeConnection = true;
                 }
                 else if (input.equals("SENDFILE")) {
                     String fileNameI = this.inFromStd.next();
@@ -161,7 +166,8 @@ public class ClackClient{
             }
 
     /**
-     *  Currently no implementation.
+     *  sendData is a function that will write to an object to the server. It will also flush out the stream to make sure
+     *  that there is no unwanted data. In this function it will also catch an exception if one is thrown.
      */
     public void sendData() {
 
@@ -181,7 +187,8 @@ public class ClackClient{
 
     }
     /**
-     *  Currently no implementation.
+     *  receiveData is a function that will get data from the server by reading the object. It will also catch an
+     *  exception if one is thrown.
      */
     public void receiveData() {
         try {
@@ -284,4 +291,3 @@ public class ClackClient{
   
 }
 
-}

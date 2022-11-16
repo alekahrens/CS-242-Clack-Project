@@ -52,18 +52,22 @@ public class ClackServer {
         this(DEFAULT_PORT);
        
     }
+
     /**
-     *  Currently no implementation.
+     *  Starts the server socket and receives data from the client if the close client flag is not true
+     *  It will also catch exceptions if they are thrown
      */
     public void start() {
       try {
           ServerSocket sskt = new ServerSocket(getPort());
           Socket clientSkt = sskt.accept();
-          inFromClient = (ObjectInputStream) clientSkt.getInputStream();
-          outToClient = (ObjectOutputStream) clientSkt.getOutputStream();
-          receiveData();
-          this.dataToSendToClient = this.dataToReceiveFromClient;
-          sendData();
+          this.inFromClient = new ObjectInputStream(clientSkt.getInputStream());
+          outToClient = new ObjectOutputStream(clientSkt.getOutputStream());
+          while (!closeConnection) {
+              receiveData();
+              this.dataToSendToClient = this.dataToReceiveFromClient;
+              sendData();
+          }
           clientSkt.close();
           sskt.close();
       }
@@ -85,14 +89,23 @@ public class ClackServer {
 
     }
     /**
-     *  Currently no implementation.
+     *  reveiveData is a function that will check to see if the data type is equal to 3. If it is equal to 3, then
+     *  it will close the server. If not it will print the data from the file that the client sent.
+     *  This will also catch exceptions if one is thrown
      */
     public void receiveData() {
+        //System.out.println("Is DONE Running");
         try {
-            this.dataToReceiveFromClient = (ClackData) inFromClient.readObject();
-            System.out.println(this.dataToReceiveFromClient.toString());
-            if (this.dataToReceiveFromClient.getType() == 1) {
+            //System.out.println("Inside the try");
+            this.dataToReceiveFromClient = (ClackData) this.inFromClient.readObject();
+            //System.out.println(this.dataToReceiveFromClient.getType());
+            //System.out.println(this.dataToReceiveFromClient.toString());
+            if (this.dataToReceiveFromClient.getType() == 3) {
+                //System.out.println("1");
                 this.closeConnection = true;
+            }
+            else{
+                System.out.println(this.dataToReceiveFromClient.toString());
             }
         }
         catch (ClassNotFoundException cnfe) {
@@ -113,7 +126,10 @@ public class ClackServer {
         }
     }
     /**
-     *  Currently no implementation.
+     *  sendData is a function that will send data from the server to the client. It will write to the object and
+     *  send it to the client. It will also flush everything out of the stream to make sure that no unwanted data is
+     *  stuck in the stream.
+     *  It will also catch an exception if one is thrown.
      */
     public void sendData() {
         try {
@@ -174,9 +190,11 @@ public class ClackServer {
         if (args.length > 0) {
             int argport = Integer.parseInt(args[0]);
             ClackServer pServer = new ClackServer(argport);
+            pServer.start();
         }
         else {
             ClackServer sServer = new ClackServer(DEFAULT_PORT);
+            sServer.start();
         }
     }
 }
