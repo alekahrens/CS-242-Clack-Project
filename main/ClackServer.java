@@ -16,6 +16,7 @@ import java.util.Iterator;
  *  A boolean representing whether the connection is open or closed.
  *  Data to receive from the client in the form of a ClackData object.
  *  Data to send to the client in the form of a ClackData object.
+ *  An ArrayList of ServerSideClientIO objects.
  */
 
 public class ClackServer {
@@ -54,7 +55,10 @@ public class ClackServer {
        
     }
     /**
-     *  Currently no implementation.
+     *  Start begins by initalizing a new ServerSocket using the port of the ClackServer object.
+     *  Then, while the connection is open, a client socket will be created alongside a ServerSideClientIO,
+     *  with the latter being added to a list. A new thread will be created using the SSCIO and started. Upon
+     *  the connection being closed, the loop will stop and the socket will close.
      */
     public void start() {
       try {
@@ -88,7 +92,12 @@ public class ClackServer {
       }
 
     }
-
+    /**
+     * Broadcast is a synchronized method that will iterate through the list of ServerSideClientIO objects
+     * and set the data to be sent to the client. Then it will call the sendData() method to send the data to
+     * the clients.
+     * @param dataToBroadcastToClients      The data that will be sent to the clients.
+     */
     public synchronized void broadcast(ClackData dataToBroadcastToClients) {
         Iterator<ServerSideClientIO> iter = serverSideClientIOList.iterator();
         while (iter.hasNext()) {
@@ -97,10 +106,21 @@ public class ClackServer {
         }
     }
 
+    /**
+     * Remove is a synchronized method that will remove a client from the ServerSideClientIO list, indicated
+     * by the argument that is passed.
+     * @param serverSideClientIO    The ServerSideClientIO object that represents the client to be removed.
+     */
     public synchronized void remove(ServerSideClientIO serverSideClientIO) {
         this.serverSideClientIOList.remove(serverSideClientIO);
     }
 
+    /**
+     * GetUsers() is a method that will create a new ArrayList to store all the usernames of the active clients,
+     * collected by iterating through the serverSideClientIOList and using the getUserName() method. It will then
+     * join the list into a string that will be later passed to a MessageClackData constructor.
+     * @return userListString       The string form of the list of usernames.
+     */
     public synchronized String GetUsers() {
         ArrayList<String> userList = new ArrayList<>();
         for (int i = 0; i < this.serverSideClientIOList.size(); i++) {
