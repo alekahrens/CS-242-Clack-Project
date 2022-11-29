@@ -86,7 +86,9 @@ public class ClackClient{
         this("Anon");
     }
     /**
-     *  Initializing scanner and reading/printing data.
+     *  The start method will initialize the scanner, the socket, and the input/output streams for the client.
+     *  A new ClientSideServerListener will be created, as will a new thread that is started before the while loop.
+     *  The while loop will call the methods readClientData() and sendData() until the connection is closed.
      */
     public void start() {
         try {
@@ -129,7 +131,12 @@ public class ClackClient{
 
     }
     /**
-     *  Reads input from the user, and will do a variety of different things depending on input
+     *  readClientData() takes input from the client user, and has a multitude of functions. If the user enters
+     *  "DONE", the connection will be closed and a MessageClackData will be created and assigned to dataToSendToServer
+     *  to reflect this. If the user enters "SENDFILE" along with a filename, the file data will be encrypted and
+     *  sent to the server. If the user enters "LISTUSERS", a MessageClackData will be sent to the server, giving the
+     *  server the instructions to collect the list of users and send them back to the client. Otherwise, a message
+     *  will be sent to the server.
      */
     public void readClientData() {
                 String input = this.inFromStd.next();
@@ -150,13 +157,10 @@ public class ClackClient{
                         this.dataToSendToServer = null;
 
                     }
-
                 }
                 else if (input.equals("LISTUSERS")) {
-                    /** Do nothing for now */
                     String message = input + this.inFromStd.nextLine();
                     this.dataToSendToServer = new MessageClackData(this.userName, message, key, ClackData.CONSTANT_LISTUSERS);
-
                 }
 
                 else {
@@ -166,7 +170,7 @@ public class ClackClient{
             }
 
     /**
-     *  Currently no implementation.
+     *  sendData() uses the output stream to send data to the server.
      */
     public void sendData() {
         try {
@@ -185,7 +189,7 @@ public class ClackClient{
 
     }
     /**
-     *  Currently no implementation.
+     *  receiveData() uses the input stream to receive data from the server.
      */
     public void receiveData() {
         try {
@@ -256,7 +260,7 @@ public class ClackClient{
         result = 31*result+(this.getUserName()!= null ? this.getUserName().hashCode():0);
         return result;
     }
-    /*
+    /**
      *  Overridden equals() method.
      *  @param other    object to compare to.
      *  @return     returns the boolean value for the comparison.
@@ -266,7 +270,7 @@ public class ClackClient{
         ClackClient otherClient = (ClackClient)other;
         return this.userName == otherClient.userName && this.hostName == otherClient.hostName && this.port == otherClient.port;
     }
-    /*
+    /**
      *  Overridden toString() method.
      *  @return     returns the object as a string.
      */
