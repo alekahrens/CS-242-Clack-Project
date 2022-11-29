@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.channels.IllegalBlockingModeException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *  ClackServer represents the server. It contains:
@@ -21,12 +23,12 @@ public class ClackServer {
     
     private int port;
     private boolean closeConnection;
+
     private ClackData dataToReceiveFromClient;
     private ClackData dataToSendToClient;
 
-    private ObjectInputStream inFromClient;
+    private ArrayList<ServerSideClientIO> serverSideClientIOList;
 
-    private ObjectOutputStream outToClient;
     /**
      *  Constructor with port declared. Sets data to null.
      *  @param port     the port number defined by the user.
@@ -40,8 +42,7 @@ public class ClackServer {
             this.closeConnection = false;
             this.dataToReceiveFromClient = null;
             this.dataToSendToClient = null;
-            this.inFromClient = null;
-            this.outToClient = null;
+            this.serverSideClientIOList = new ArrayList<>();
         }
 
     }
@@ -58,77 +59,55 @@ public class ClackServer {
     public void start() {
       try {
           ServerSocket sskt = new ServerSocket(getPort());
-          Socket clientSkt = sskt.accept();
-          inFromClient = (ObjectInputStream) clientSkt.getInputStream();
-          outToClient = (ObjectOutputStream) clientSkt.getOutputStream();
-          receiveData();
-          this.dataToSendToClient = this.dataToReceiveFromClient;
-          sendData();
-          clientSkt.close();
+
+          while (!this.closeConnection) {
+              Socket clientSkt = sskt.accept();
+              ServerSideClientIO serverSideClientIO = new ServerSideClientIO(this, clientSkt);
+              serverSideClientIOList.add(serverSideClientIO);
+              Thread thread = new Thread(serverSideClientIO);
+              thread.start();
+              if (this.closeConnection) {
+                  break;
+              }
+
+          }
+
           sskt.close();
       }
-      catch (SecurityException se) {
-          System.err.println(se.getMessage());
-      }
-      catch (SocketTimeoutException ste) {
-          System.err.println(ste.getMessage());
-      }
-      catch (IllegalBlockingModeException ibme) {
-          System.err.println(ibme.getMessage());
-      }
-      catch (IllegalArgumentException iae) {
-          System.err.println("Invalid port.");
-      }
-      catch (IOException ioe) {
-          System.err.println(ioe.getMessage());
+      catch (StreamCorruptedException sce) {
+          System.err.println("StreamCorruptedException thrown in start(): " + sce.getMessage());
+
+      } catch (IOException ioe) {
+          System.err.println("IOException thrown in start(): " + ioe.getMessage());
+
+      } catch (SecurityException se) {
+          System.err.println("SecurityException thrown in start(): " + se.getMessage());
+
+      } catch (IllegalArgumentException iae) {
+          System.err.println("IllegalArgumentException thrown in start(): " + iae.getMessage());
       }
 
     }
-    /**
-     *  Currently no implementation.
-     */
-    public void receiveData() {
-        try {
-            this.dataToReceiveFromClient = (ClackData) inFromClient.readObject();
-            System.out.println(this.dataToReceiveFromClient.toString());
-            if (this.dataToReceiveFromClient.getType() == 1) {
-                this.closeConnection = true;
-            }
-        }
-        catch (ClassNotFoundException cnfe) {
-            System.err.println("Could not find class.");
 
-        }
-        catch (InvalidClassException ice) {
-            System.err.println("Class is not serialized.");
-        }
-        catch (StreamCorruptedException sce) {
-            System.err.println("Stream has been corrupted.");
-        }
-        catch (OptionalDataException ode) {
-            System.err.println("Primitive data type found in stream.");
-        }
-        catch (IOException ioe) {
-            System.err.println("There was an error reading the data.");
+    public synchronized void broadcast(ClackData dataToBroadcastToClients) {
+        Iterator<ServerSideClientIO> iter = serverSideClientIOList.iterator();
+        while (iter.hasNext()) {
+            iter.next().setDataToSendToClient(this.dataToSendToClient);
+            iter.next().sendData();
         }
     }
-    /**
-     *  Currently no implementation.
-     */
-    public void sendData() {
-        try {
-            outToClient.writeObject(this.dataToSendToClient);
-            outToClient.flush();
+
+    public synchronized void remove(ServerSideClientIO serverSideClientIO) {
+        this.serverSideClientIOList.remove(serverSideClientIO);
+    }
+
+    public synchronized String GetUsers() {
+        ArrayList<String> userList = new ArrayList<>();
+        for (int i = 0; i < this.serverSideClientIOList.size(); i++) {
+            userList.add(serverSideClientIOList.get(i).getUserName());
         }
-        catch (InvalidClassException ice) {
-            System.err.println("Invalid class");
-        }
-        catch (NotSerializableException nse) {
-            System.err.println("Class is not serialized.");
-        }
-        catch (IOException ioe) {
-            System.err.println("There was an error sending the data.");
-        }
+        String userListString = String.join(",", userList);
+        return userListString;
     }
     /**
      *  Getter for port.
@@ -165,18 +144,21 @@ public class ClackServer {
     public String toString() {
         return "This instance of ClackServer has the following properties:\n"
                 + "Port number: " + this.port + "\n"
-                + "Connection status: " + (this.closeConnection ? "Closed" : "Open") + "\n"
-                + "Data to receive from the client: " + this.dataToReceiveFromClient + "\n"
-                + "Data to send to the client: " + this.dataToSendToClient + "\n";
+                + "Connection status: " + (this.closeConnection ? "Closed" : "Open") + "\n";
+
     }
 
     public static void main(String[] args) {
-        if (args.length > 0) {
-            int argport = Integer.parseInt(args[0]);
-            ClackServer pServer = new ClackServer(argport);
+        ClackServer clackServer;
+
+        if (args.length == 0) {
+            clackServer = new ClackServer();
         }
         else {
-            ClackServer sServer = new ClackServer(DEFAULT_PORT);
+            int port = Integer.parseInt(args[0]);
+            clackServer = new ClackServer(port);
+
         }
+        clackServer.start();
     }
 }
