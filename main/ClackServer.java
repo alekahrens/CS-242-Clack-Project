@@ -62,7 +62,7 @@ public class ClackServer {
      */
     public void start() {
       try {
-          ServerSocket sskt = new ServerSocket(getPort());
+          ServerSocket sskt = new ServerSocket(this.port);
 
           while (!this.closeConnection) {
               Socket clientSkt = sskt.accept();
@@ -71,7 +71,9 @@ public class ClackServer {
               Thread thread = new Thread(serverSideClientIO);
               thread.start();
               if (this.closeConnection) {
+                  thread.interrupt();
                   break;
+
               }
 
           }
@@ -101,7 +103,7 @@ public class ClackServer {
     public synchronized void broadcast(ClackData dataToBroadcastToClients) {
         Iterator<ServerSideClientIO> iter = serverSideClientIOList.iterator();
         while (iter.hasNext()) {
-            iter.next().setDataToSendToClient(this.dataToSendToClient);
+            iter.next().setDataToSendToClient(dataToBroadcastToClients);
             iter.next().sendData();
         }
     }

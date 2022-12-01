@@ -24,10 +24,10 @@ public class ClientSideServerListener implements Runnable {
      */
     @Override
     public void run() {
-       while(!this.client.getCloseConnection()) {
-            this.client.receiveData();
-            this.client.printData();
-            if(this.client.getCloseConnection()) {
+       while(!client.getCloseConnection()) {
+            client.receiveData();
+            client.printData();
+            if(client.getCloseConnection()) {
                 break;
             }
        }

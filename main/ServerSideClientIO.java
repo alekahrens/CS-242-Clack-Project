@@ -52,12 +52,15 @@ public class ServerSideClientIO implements Runnable {
     @Override
     public void run() {
         try {
-            this.inFromClient = new ObjectInputStream(this.clientSocket.getInputStream());
-            this.outToClient = new ObjectOutputStream(this.clientSocket.getOutputStream());
+            this.inFromClient = new ObjectInputStream(clientSocket.getInputStream());
+            this.outToClient = new ObjectOutputStream(clientSocket.getOutputStream());
+
             while(!this.closeConnection) {
                 receiveData();
-                this.server.broadcast(this.dataToSendToClient);
+                server.broadcast(this.dataToSendToClient);
                 if (this.closeConnection) {
+                    this.inFromClient.close();
+                    this.outToClient.close();
                     break;
                 }
             }
@@ -71,8 +74,8 @@ public class ServerSideClientIO implements Runnable {
      */
     public void sendData() {
         try {
-            this.outToClient.writeObject(this.dataToSendToClient);
-            this.outToClient.flush();
+            outToClient.writeObject(dataToSendToClient);
+            outToClient.flush();
         }
         catch (InvalidClassException ice) {
             System.err.println("Invalid class");
@@ -94,7 +97,7 @@ public class ServerSideClientIO implements Runnable {
      */
     public void receiveData() {
         try {
-            this.dataToReceiveFromClient = (ClackData) this.inFromClient.readObject();
+            dataToReceiveFromClient = (ClackData) inFromClient.readObject();
             /** For debugging purposes */
             System.out.println("Received data from the client:");
             System.out.println("From: " + this.dataToReceiveFromClient.getUserName());
@@ -102,14 +105,14 @@ public class ServerSideClientIO implements Runnable {
             System.out.println("Data: " + this.dataToReceiveFromClient.getData());
             System.out.println();
 
-            if (this.dataToReceiveFromClient.getType() == ClackData.CONSTANT_LOGOUT) {
-                this.closeConnection = true;
-                this.server.remove(this);
+            if (dataToReceiveFromClient.getType() == ClackData.CONSTANT_LOGOUT) {
+                closeConnection = true;
+                server.remove(this);
             }
             if (this.dataToReceiveFromClient.getType() == ClackData.CONSTANT_LISTUSERS) {
-                String userName = this.dataToReceiveFromClient.getUserName();
-                String userList = this.server.GetUsers();
-                this.dataToSendToClient = new MessageClackData(userName, userList, ClackData.CONSTANT_LISTUSERS);
+                String userName = dataToReceiveFromClient.getUserName();
+                String userList = server.GetUsers();
+                dataToSendToClient = new MessageClackData(userName, userList, ClackData.CONSTANT_LISTUSERS);
             }
 
         }

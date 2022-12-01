@@ -97,14 +97,11 @@ public class ClackClient{
             this.outToServer = new ObjectOutputStream(skt.getOutputStream());
             this.inFromServer = new ObjectInputStream(skt.getInputStream());
 
-            ClientSideServerListener cssl = new ClientSideServerListener(this);
-            Thread ccslThread = new Thread(cssl);
-            ccslThread.start();
+            (new Thread(new ClientSideServerListener(this))).start();
 
             while (!this.closeConnection) {
                 readClientData();
                 sendData();
-
                 if (this.closeConnection) {
                     break;
                 }
@@ -113,8 +110,6 @@ public class ClackClient{
             this.outToServer.close();
             skt.close();
             this.inFromStd.close();
-
-
         }
         catch(UnknownHostException uhe) {
             System.err.println("Unknown host.");

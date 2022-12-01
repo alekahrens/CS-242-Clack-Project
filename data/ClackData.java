@@ -61,7 +61,7 @@ public abstract class ClackData implements Serializable {
     /**
      *  Abstract method for retrieving data.
      */
-    abstract public Object getData();
+    public abstract String getData();
     
     abstract public String getData(String key);
     
@@ -71,40 +71,67 @@ public abstract class ClackData implements Serializable {
      */
     
     protected String encrypt(String inputStringToEncrypt, String key) {
-        int length = inputStringToEncrypt.length();
+        if (inputStringToEncrypt == null) {
+            return null;
+        }
 
-        for (int i = 0; ;i++) {
-            if (length == i) {
-                i = 0;
+        final int keyLen = key.length();
+        int keyIndex = 0;
+        StringBuilder stringEncrypted = new StringBuilder();
+
+        for (int i = 0; i < inputStringToEncrypt.length(); i++) {
+            char inputCharToEncrypt = inputStringToEncrypt.charAt(i);
+            char inputCharEncrypted;
+
+            if (Character.isLowerCase(inputCharToEncrypt)) {
+                char keyChar = Character.toLowerCase(key.charAt(keyIndex));
+                inputCharEncrypted = (char) (((inputCharToEncrypt - 'a') + (keyChar - 'a')) % 26 + 'a');
+                keyIndex = (keyIndex + 1) % keyLen;
+
+            } else if (Character.isUpperCase(inputCharToEncrypt)) {
+                char keyChar = Character.toUpperCase(key.charAt(keyIndex));
+                inputCharEncrypted = (char) (((inputCharToEncrypt - 'A') + (keyChar - 'A')) % 26 + 'A');
+                keyIndex = (keyIndex + 1) % keyLen;
+
+            } else {
+                inputCharEncrypted = inputCharToEncrypt;
             }
-            if (key.length() == inputStringToEncrypt.length()) {
-                break;   
-            }
-            key+=(key.charAt(i));
+
+            stringEncrypted.append(inputCharEncrypted);
         }
-        
-        String encryptedString = "";
-        
-        for (int j = 0; j < inputStringToEncrypt.length(); j++) {
-            int y = (inputStringToEncrypt.charAt(j) + key.charAt(j)) % 26;
-            
-            y += 'A';
-           
-            encryptedString+=(char)(y);
-        }
-        return encryptedString;
+
+        return stringEncrypted.toString();
     }
     
     protected String decrypt(String inputStringToDecrypt, String key) {
-        String decryptedText="";
- 
-         for (int k = 0 ; k < inputStringToDecrypt.length() && k < key.length(); k++) {
-       
-            int z = (inputStringToDecrypt.charAt(k) - key.charAt(k) + 26) % 26;
-            z += 'A';
-            decryptedText+=(char)(z);
-         }
-         return decryptedText;
+        if (inputStringToDecrypt == null) {
+            return null;
+        }
+        final int keyLen = key.length();
+        int keyIndex = 0;
+        StringBuilder stringDecrypted = new StringBuilder();
+
+        for (int i = 0; i < inputStringToDecrypt.length(); i++) {
+            char inputCharToDecrypt = inputStringToDecrypt.charAt(i);
+            char inputCharDecrypted;
+
+            if (Character.isLowerCase(inputCharToDecrypt)) {
+                char keyChar = Character.toLowerCase(key.charAt(keyIndex));
+                inputCharDecrypted = (char) ((inputCharToDecrypt - keyChar + 26) % 26 + 'a');
+                keyIndex = (keyIndex + 1) % keyLen;
+
+            } else if (Character.isUpperCase(inputCharToDecrypt)) {
+                char keyChar = Character.toUpperCase(key.charAt(keyIndex));
+                inputCharDecrypted = (char) ((inputCharToDecrypt - keyChar + 26) % 26 + 'A');
+                keyIndex = (keyIndex + 1) % keyLen;
+
+            } else {
+                inputCharDecrypted = inputCharToDecrypt;
+            }
+
+            stringDecrypted.append(inputCharDecrypted);
+        }
+
+        return stringDecrypted.toString();
     }
-  
 }
