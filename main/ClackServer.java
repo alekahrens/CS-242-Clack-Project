@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.channels.IllegalBlockingModeException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *  ClackServer represents the server. It contains:
@@ -14,6 +16,7 @@ import java.nio.channels.IllegalBlockingModeException;
  *  A boolean representing whether the connection is open or closed.
  *  Data to receive from the client in the form of a ClackData object.
  *  Data to send to the client in the form of a ClackData object.
+ *  An ArrayList of ServerSideClientIO objects.
  */
 
 public class ClackServer {
@@ -21,12 +24,12 @@ public class ClackServer {
     
     private int port;
     private boolean closeConnection;
+
     private ClackData dataToReceiveFromClient;
     private ClackData dataToSendToClient;
 
-    private ObjectInputStream inFromClient;
+    private ArrayList<ServerSideClientIO> serverSideClientIOList;
 
-    private ObjectOutputStream outToClient;
     /**
      *  Constructor with port declared. Sets data to null.
      *  @param port     the port number defined by the user.
@@ -40,8 +43,7 @@ public class ClackServer {
             this.closeConnection = false;
             this.dataToReceiveFromClient = null;
             this.dataToSendToClient = null;
-            this.inFromClient = null;
-            this.outToClient = null;
+            this.serverSideClientIOList = new ArrayList<>();
         }
 
     }
@@ -52,99 +54,82 @@ public class ClackServer {
         this(DEFAULT_PORT);
        
     }
-
     /**
-     *  Starts the server socket and receives data from the client if the close client flag is not true
-     *  It will also catch exceptions if they are thrown
+     *  Start begins by initalizing a new ServerSocket using the port of the ClackServer object.
+     *  Then, while the connection is open, a client socket will be created alongside a ServerSideClientIO,
+     *  with the latter being added to a list. A new thread will be created using the SSCIO and started. Upon
+     *  the connection being closed, the loop will stop and the socket will close.
      */
     public void start() {
       try {
-          ServerSocket sskt = new ServerSocket(getPort());
-          Socket clientSkt = sskt.accept();
-          this.inFromClient = new ObjectInputStream(clientSkt.getInputStream());
-          outToClient = new ObjectOutputStream(clientSkt.getOutputStream());
-          while (!closeConnection) {
-              receiveData();
-              this.dataToSendToClient = this.dataToReceiveFromClient;
-              sendData();
+          ServerSocket sskt = new ServerSocket(this.port);
+
+          while (!this.closeConnection) {
+              Socket clientSkt = sskt.accept();
+              ServerSideClientIO serverSideClientIO = new ServerSideClientIO(this, clientSkt);
+              serverSideClientIOList.add(serverSideClientIO);
+              Thread thread = new Thread(serverSideClientIO);
+              thread.start();
+              if (this.closeConnection) {
+                  thread.interrupt();
+                  break;
+
+              }
+
           }
-          clientSkt.close();
+
           sskt.close();
       }
-      catch (SecurityException se) {
-          System.err.println(se.getMessage());
-      }
-      catch (SocketTimeoutException ste) {
-          System.err.println(ste.getMessage());
-      }
-      catch (IllegalBlockingModeException ibme) {
-          System.err.println(ibme.getMessage());
-      }
-      catch (IllegalArgumentException iae) {
-          System.err.println("Invalid port.");
-      }
-      catch (IOException ioe) {
-          System.err.println(ioe.getMessage());
+      catch (StreamCorruptedException sce) {
+          System.err.println("StreamCorruptedException thrown in start(): " + sce.getMessage());
+
+      } catch (IOException ioe) {
+          System.err.println("IOException thrown in start(): " + ioe.getMessage());
+
+      } catch (SecurityException se) {
+          System.err.println("SecurityException thrown in start(): " + se.getMessage());
+
+      } catch (IllegalArgumentException iae) {
+          System.err.println("IllegalArgumentException thrown in start(): " + iae.getMessage());
       }
 
     }
     /**
-     *  reveiveData is a function that will check to see if the data type is equal to 3. If it is equal to 3, then
-     *  it will close the server. If not it will print the data from the file that the client sent.
-     *  This will also catch exceptions if one is thrown
+     * Broadcast is a synchronized method that will iterate through the list of ServerSideClientIO objects
+     * and set the data to be sent to the client. Then it will call the sendData() method to send the data to
+     * the clients.
+     * @param dataToBroadcastToClients      The data that will be sent to the clients.
      */
-    public void receiveData() {
-        //System.out.println("Is DONE Running");
-        try {
-            //System.out.println("Inside the try");
-            this.dataToReceiveFromClient = (ClackData) this.inFromClient.readObject();
-            //System.out.println(this.dataToReceiveFromClient.getType());
-            //System.out.println(this.dataToReceiveFromClient.toString());
-            if (this.dataToReceiveFromClient.getType() == 3) {
-                //System.out.println("1");
-                this.closeConnection = true;
-            }
-            else{
-                System.out.println(this.dataToReceiveFromClient.toString());
-            }
-        }
-        catch (ClassNotFoundException cnfe) {
-            System.err.println("Could not find class.");
-
-        }
-        catch (InvalidClassException ice) {
-            System.err.println("Class is not serialized.");
-        }
-        catch (StreamCorruptedException sce) {
-            System.err.println("Stream has been corrupted.");
-        }
-        catch (OptionalDataException ode) {
-            System.err.println("Primitive data type found in stream.");
-        }
-        catch (IOException ioe) {
-            System.err.println("There was an error reading the data.");
+    public synchronized void broadcast(ClackData dataToBroadcastToClients) {
+        Iterator<ServerSideClientIO> iter = serverSideClientIOList.iterator();
+        while (iter.hasNext()) {
+            iter.next().setDataToSendToClient(dataToBroadcastToClients);
+            iter.next().sendData();
         }
     }
+
     /**
-     *  sendData is a function that will send data from the server to the client. It will write to the object and
-     *  send it to the client. It will also flush everything out of the stream to make sure that no unwanted data is
-     *  stuck in the stream.
-     *  It will also catch an exception if one is thrown.
+     * Remove is a synchronized method that will remove a client from the ServerSideClientIO list, indicated
+     * by the argument that is passed.
+     * @param serverSideClientIO    The ServerSideClientIO object that represents the client to be removed.
      */
-    public void sendData() {
-        try {
-            outToClient.writeObject(this.dataToSendToClient);
-            outToClient.flush();
+    public synchronized void remove(ServerSideClientIO serverSideClientIO) {
+        this.serverSideClientIOList.remove(serverSideClientIO);
+    }
+
+    /**
+     * GetUsers() is a method that will create a new ArrayList to store all the usernames of the active clients,
+     * collected by iterating through the serverSideClientIOList and using the getUserName() method. It will then
+     * join the list into a string that will be later passed to a MessageClackData constructor.
+     * @return userListString       The string form of the list of usernames.
+     */
+    public synchronized String GetUsers() {
+        ArrayList<String> userList = new ArrayList<>();
+        for (int i = 0; i < this.serverSideClientIOList.size(); i++) {
+            userList.add(serverSideClientIOList.get(i).getUserName());
         }
-        catch (InvalidClassException ice) {
-            System.err.println("Invalid class");
-        }
-        catch (NotSerializableException nse) {
-            System.err.println("Class is not serialized.");
-        }
-        catch (IOException ioe) {
-            System.err.println("There was an error sending the data.");
-        }
+        String userListString = String.join(",", userList);
+        return userListString;
     }
     /**
      *  Getter for port.
@@ -181,20 +166,21 @@ public class ClackServer {
     public String toString() {
         return "This instance of ClackServer has the following properties:\n"
                 + "Port number: " + this.port + "\n"
-                + "Connection status: " + (this.closeConnection ? "Closed" : "Open") + "\n"
-                + "Data to receive from the client: " + this.dataToReceiveFromClient + "\n"
-                + "Data to send to the client: " + this.dataToSendToClient + "\n";
+                + "Connection status: " + (this.closeConnection ? "Closed" : "Open") + "\n";
+
     }
 
     public static void main(String[] args) {
-        if (args.length > 0) {
-            int argport = Integer.parseInt(args[0]);
-            ClackServer pServer = new ClackServer(argport);
-            pServer.start();
+        ClackServer clackServer;
+
+        if (args.length == 0) {
+            clackServer = new ClackServer();
         }
         else {
-            ClackServer sServer = new ClackServer(DEFAULT_PORT);
-            sServer.start();
+            int port = Integer.parseInt(args[0]);
+            clackServer = new ClackServer(port);
+
         }
+        clackServer.start();
     }
 }
