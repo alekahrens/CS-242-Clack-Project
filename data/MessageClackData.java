@@ -19,15 +19,13 @@ public class MessageClackData extends ClackData {
      *  Constructor with no arguments, will default to a username "Anon" and message "null", with a default type of 0.
      */
     public MessageClackData() {
-        this("Anon", "null", 0);
+        this("Anon", "", CONSTANT_SENDMESSAGE);
     }
 
     public MessageClackData(String userName, String message, String key, int type) {
-       String encryptedMessage = encrypt(message, key);
-       new MessageClackData(userName, encryptedMessage, type);
+        super(userName, type);
+        this.message = encrypt(message, key);
     }
-    
-    
 
     /**
      *  Overridden getData() to return instant message.
@@ -35,7 +33,7 @@ public class MessageClackData extends ClackData {
      */
     @Override
     public String getData() {
-        return message;
+        return this.message;
     }
     /**
      *  Overridden getData() to return a decrypted message.
@@ -43,8 +41,8 @@ public class MessageClackData extends ClackData {
      */
     @Override
     public String getData(String key) {
-        String decryptedMessage = decrypt(this.message, key);
-        return decryptedMessage;
+        return decrypt(this.message, key);
+
     }
     /**
      *  Overridden hashCode() method.
