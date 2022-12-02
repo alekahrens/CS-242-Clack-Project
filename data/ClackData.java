@@ -102,7 +102,14 @@ public abstract class ClackData implements Serializable {
 
         return stringEncrypted.toString();
     }
-    
+
+    /**
+     *
+     * @param inputStringToDecrypt
+     * @param key
+     * @return
+     * This will decrypt the encoded message
+     */
     protected String decrypt(String inputStringToDecrypt, String key) {
         if (inputStringToDecrypt == null) {
             return null;
