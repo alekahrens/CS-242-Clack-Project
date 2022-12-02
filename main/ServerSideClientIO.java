@@ -93,12 +93,6 @@ public class ServerSideClientIO implements Runnable {
     public void receiveData() {
         try {
             dataToReceiveFromClient = (ClackData) inFromClient.readObject();
-            /** For debugging purposes */
-            System.out.println("Received data from the client:");
-            System.out.println("From: " + this.dataToReceiveFromClient.getUserName());
-            System.out.println("Date: " + this.dataToReceiveFromClient.getDate());
-            System.out.println("Data: " + this.dataToReceiveFromClient.getData());
-            System.out.println();
 
             if (dataToReceiveFromClient.getType() == ClackData.CONSTANT_LOGOUT) {
                 closeConnection = true;
@@ -114,7 +108,6 @@ public class ServerSideClientIO implements Runnable {
         }
         catch (ClassNotFoundException cnfe) {
             System.err.println("Could not find class.");
-
         }
         catch (InvalidClassException ice) {
             System.err.println("Class is not serialized.");
