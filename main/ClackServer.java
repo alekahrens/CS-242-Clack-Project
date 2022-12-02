@@ -61,29 +61,25 @@ public class ClackServer {
      *  the connection being closed, the loop will stop and the socket will close.
      */
     public void start() {
-      try {
-          ServerSocket sskt = new ServerSocket(this.port);
+        try {
+            ServerSocket sskt = new ServerSocket(this.port);
 
-          while (!this.closeConnection) {
-              Socket clientSkt = sskt.accept();
-              ServerSideClientIO serverSideClientIO = new ServerSideClientIO(this, clientSkt);
-              serverSideClientIOList.add(serverSideClientIO);
-              Thread thread = new Thread(serverSideClientIO);
-              thread.start();
-              if (this.closeConnection) {
-                  thread.interrupt();
-                  break;
+            while (!this.closeConnection) {
+                Socket clientSkt = sskt.accept();
+                ServerSideClientIO serverSideClientIO = new ServerSideClientIO(this, clientSkt);
+                serverSideClientIOList.add(serverSideClientIO);
+                Thread thread = new Thread(serverSideClientIO);
+                thread.start();
+            }
+            sskt.close();
+        }
 
-              }
-
-          }
-
-          sskt.close();
-      }
       catch (StreamCorruptedException sce) {
+            closeConnection = true;
           System.err.println("StreamCorruptedException thrown in start(): " + sce.getMessage());
 
       } catch (IOException ioe) {
+            closeConnection = true;
           System.err.println("IOException thrown in start(): " + ioe.getMessage());
 
       } catch (SecurityException se) {
@@ -101,10 +97,9 @@ public class ClackServer {
      * @param dataToBroadcastToClients      The data that will be sent to the clients.
      */
     public synchronized void broadcast(ClackData dataToBroadcastToClients) {
-        Iterator<ServerSideClientIO> iter = serverSideClientIOList.iterator();
-        while (iter.hasNext()) {
-            iter.next().setDataToSendToClient(dataToBroadcastToClients);
-            iter.next().sendData();
+        for (ServerSideClientIO serverSideClientIO : serverSideClientIOList) {
+            serverSideClientIO.setDataToSendToClient(dataToBroadcastToClients);
+            serverSideClientIO.sendData();
         }
     }
 
