@@ -69,7 +69,6 @@ public class FileClackData extends ClackData {
                 this.fileContents+=line;
                 line = contentReader.readLine();
             }
-            System.out.println(this.fileContents);
             contentReader.close();
         }
         catch (FileNotFoundException fnfe) {
