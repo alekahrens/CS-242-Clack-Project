@@ -55,14 +55,9 @@ public class ServerSideClientIO implements Runnable {
             this.inFromClient = new ObjectInputStream(clientSocket.getInputStream());
             this.outToClient = new ObjectOutputStream(clientSocket.getOutputStream());
 
-            while(!this.closeConnection) {
+            while(!closeConnection) {
                 receiveData();
                 server.broadcast(this.dataToSendToClient);
-                if (this.closeConnection) {
-                    this.inFromClient.close();
-                    this.outToClient.close();
-                    break;
-                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -108,8 +103,9 @@ public class ServerSideClientIO implements Runnable {
             if (dataToReceiveFromClient.getType() == ClackData.CONSTANT_LOGOUT) {
                 closeConnection = true;
                 server.remove(this);
+                System.exit(1);
             }
-            if (this.dataToReceiveFromClient.getType() == ClackData.CONSTANT_LISTUSERS) {
+            if (dataToReceiveFromClient.getType() == ClackData.CONSTANT_LISTUSERS) {
                 String userName = dataToReceiveFromClient.getUserName();
                 String userList = server.GetUsers();
                 dataToSendToClient = new MessageClackData(userName, userList, ClackData.CONSTANT_LISTUSERS);
