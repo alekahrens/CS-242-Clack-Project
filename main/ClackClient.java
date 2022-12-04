@@ -281,6 +281,12 @@ public class ClackClient{
 
     }
 
+    /**
+     * This main method starts up the client and tries to connect to the server. It gets the username and IP address
+     * from the program arguments. Starting with the username then followed by an @ with no spaces and the server
+     * IP Address.
+     * @param args
+     */
     public static void main(String[] args) {
         ClackClient clackClient;
 

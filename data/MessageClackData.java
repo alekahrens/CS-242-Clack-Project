@@ -22,6 +22,13 @@ public class MessageClackData extends ClackData {
         this("Anon", "", CONSTANT_SENDMESSAGE);
     }
 
+    /**
+     * This method take the incoming message data and encrypt it. Then sent over to the client to decrypt the data.
+     * @param userName
+     * @param message
+     * @param key
+     * @param type
+     */
     public MessageClackData(String userName, String message, String key, int type) {
         super(userName, type);
         this.message = encrypt(message, key);

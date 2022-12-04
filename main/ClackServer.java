@@ -165,6 +165,10 @@ public class ClackServer {
 
     }
 
+    /**
+     * This main method starts up the Clack server and sets up the connections and ports.
+     * @param args
+     */
     public static void main(String[] args) {
         ClackServer clackServer;
 
